@@ -9,7 +9,7 @@ def it_outputs_answers_based_on_user_input(when):
     when('app.cli.ApiClient').search_answers('A').thenReturn([
         {
             'id': 1,
-            'question': 'A?',
+            'entry': 'A?',
             'content': '*B*'
         }
     ])
@@ -25,7 +25,7 @@ def it_outputs_answers_based_on_an_argument(when):
         when('app.cli.ApiClient').search_answers('A').thenReturn([
             {
                 'id': 1,
-                'question': 'A?',
+                'entry': 'A?',
                 'content': 'B'
             }
         ])

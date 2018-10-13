@@ -2,19 +2,20 @@ from app.cli import ApiClient
 from expects import *
 import responses
 
+
 def it_retrieves_answers_filtered_with_a_phrase():
     with responses.RequestsMock() as requests_mock:
         test_json = [
             {
                 'id': 1,
-                'question': 'A?',
+                'entry': 'A?',
                 'content': 'B'
             }
         ]
 
         mock_response(
             requests_mock,
-            'http://localhost:8000/api/answers.json?question=a',
+            'http://localhost:8000/api/answers.json?entry=a',
             test_json
         )
 

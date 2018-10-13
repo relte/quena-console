@@ -14,6 +14,7 @@ expects = "*"
 pytest-spec = "*"
 pytest-mock = "*"
 pytest-mockito = "*"
+pyinstaller = "*"
 
 [requires]
 python_version = "3.7"

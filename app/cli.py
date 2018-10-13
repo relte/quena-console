@@ -9,7 +9,7 @@ class ApiClient:
         self.__base_url = base_url
 
     def search_answers(self, phrase):
-        url = urljoin(self.__base_url, '/api/answers.json?question=%s')
+        url = urljoin(self.__base_url, '/api/answers.json?entry=%s')
         return requests.get(url % phrase).json()
 
 
@@ -25,8 +25,8 @@ def main():
 
     print('\n')
     for answer in client.search_answers(phrase):
-        print(answer['question'])
-        print('-' * len(answer['question']))
+        print(answer['entry'])
+        print('-' * len(answer['entry']))
         renderer.render(answer['content'])
         print('\n')
 
