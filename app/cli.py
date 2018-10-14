@@ -23,12 +23,12 @@ def main():
 
     renderer = consolemd.Renderer()
 
-    print('\n')
+    print()
     for answer in client.search_answers(phrase):
         print(answer['entry'])
         print('-' * len(answer['entry']))
         renderer.render(answer['content'])
-        print('\n')
+        print()
 
 
 if __name__ == '__main__':

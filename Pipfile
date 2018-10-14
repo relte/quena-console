@@ -9,7 +9,6 @@ consolemd = "*"
 
 [dev-packages]
 pytest = "*"
-responses = "*"
 expects = "*"
 pytest-spec = "*"
 pytest-mock = "*"

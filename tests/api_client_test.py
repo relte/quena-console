@@ -1,37 +1,20 @@
 from app.cli import ApiClient
 from expects import *
-import responses
+from mockito import mock
+import requests
 
+def it_retrieves_answers_filtered_with_a_phrase(when, unstub):
+    test_json = [
+        {
+            'id': 1,
+            'entry': 'A?',
+            'content': 'B'
+        }
+    ]
+    response = mock(spec=requests.Response)
+    when(response).json().thenReturn(test_json)
+    when(requests).get('http://localhost:8000/api/answers.json?entry=a').thenReturn(response)
 
-def it_retrieves_answers_filtered_with_a_phrase():
-    with responses.RequestsMock() as requests_mock:
-        test_json = [
-            {
-                'id': 1,
-                'entry': 'A?',
-                'content': 'B'
-            }
-        ]
+    client = ApiClient('http://localhost:8000')
 
-        mock_response(
-            requests_mock,
-            'http://localhost:8000/api/answers.json?entry=a',
-            test_json
-        )
-
-        client = ApiClient('http://localhost:8000')
-
-        expect(client.search_answers('a')).to(equal(test_json))
-
-
-def mock_response(requests_mock, url, json, status=200):
-    requests_mock.add(
-        responses.Response(
-            method='GET',
-            url=url,
-            json=json,
-            status=status,
-            content_type='application/json',
-            match_querystring=True
-        )
-    )
+    expect(client.search_answers('a')).to(equal(test_json))
