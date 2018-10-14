@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "525c7c619bd4099a38b30fffec7526575f7c07efc2ca6e695f7ed878bec4eeab"
+            "sha256": "01dc76a4b651d09458988a643361d835cd75e05b84f3be9afae229e92df232ea"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -184,6 +184,14 @@
                 "sha256:e76826342cefe3c3d5f7e8ee4316b80d1dd8a300781612ddbc765c17ba25a6c6"
             ],
             "version": "==1.7.0"
+        },
+        "pyfakefs": {
+            "hashes": [
+                "sha256:226e8f141e40c19d10693f8df4968407eb47100705796640ee0dc5990bd6f109",
+                "sha256:8312f143b37b014cdd4641ac1f4eac0c47bb881774a3d0be125997133e609a6b"
+            ],
+            "index": "pypi",
+            "version": "==3.4.3"
         },
         "pyinstaller": {
             "hashes": [

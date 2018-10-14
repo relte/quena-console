@@ -1,7 +1,9 @@
-from app.cli import ApiClient
+import requests
 from expects import *
 from mockito import mock
-import requests
+
+from app.cli import ApiClient
+
 
 def it_retrieves_answers_filtered_with_a_phrase(when, unstub):
     test_json = [
@@ -17,4 +19,4 @@ def it_retrieves_answers_filtered_with_a_phrase(when, unstub):
 
     client = ApiClient('http://localhost:8000')
 
-    expect(client.search_answers('a')).to(equal(test_json))
+    expect(client.search_answers_for('a')).to(equal(test_json))
