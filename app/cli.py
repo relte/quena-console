@@ -20,7 +20,10 @@ class ApiClient:
 
     def search_answers_for(self, phrase):
         url = urljoin(self.__base_url, '/api/answers.json?entry=%s')
-        return requests.get(url % phrase).json()
+        response = requests.get(url % phrase)
+        response.raise_for_status()
+
+        return response.json()
 
 
 def set_api_url(ctx, param, value):
@@ -80,9 +83,13 @@ def show_answers_for(phrase):
     client = ApiClient(config['api']['base_url'])
     renderer = consolemd.Renderer()
 
-    print()
-    for answer in client.search_answers_for(phrase):
-        show_answer(answer, renderer)
+    try:
+        answers = client.search_answers_for(phrase)
+        print()
+        for answer in answers:
+            show_answer(answer, renderer)
+    except requests.exceptions.RequestException:
+        print('Could not retrieve answers. Please make sure you use a correct API base URL.')
 
 
 def show_answer(answer, renderer):

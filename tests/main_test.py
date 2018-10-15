@@ -72,3 +72,15 @@ def it_does_not_let_user_to_set_incorrect_api_base_url(fs, incorrect_example_url
 
     result = runner.invoke(main, ['--url'])
     expect(result.output).to(equal('http://localhost:8000\n'))
+
+
+def it_informs_the_user_if_it_cannot_retrieve_answers(when):
+    import requests
+    when(requests) \
+        .get('http://localhost:8000/api/answers.json?entry=a') \
+        .thenRaise(requests.exceptions.RequestException)
+
+    runner = CliRunner()
+    result = runner.invoke(main, ['a'])
+
+    expect(result.output).to(equal('Could not retrieve answers. Please make sure you use a correct API base URL.\n'))
