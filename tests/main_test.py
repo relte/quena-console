@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 from expects import *
 
@@ -42,11 +43,32 @@ def it_shows_quena_default_api_base_url():
     expect(result.output).to(equal('http://localhost:8000\n'))
 
 
-def it_lets_user_change_quena_api_base_url(fs):
+@pytest.mark.parametrize('example_url', [
+    'https://quena.com',
+    'http://quena.xyz',
+    'https://quena.example.com'
+])
+def it_lets_user_change_quena_api_base_url(fs, example_url):
     fs.create_file('app/config.ini', contents='[api]\nbase_url=http://localhost:8000')
 
     runner = CliRunner()
-    runner.invoke(main, ['--set-url', 'https://quena.example'])
+    runner.invoke(main, ['--set-url', example_url])
 
     result = runner.invoke(main, ['--url'])
-    expect(result.output).to(equal('https://quena.example\n'))
+    expect(result.output).to(equal(example_url + '\n'))
+
+
+@pytest.mark.parametrize('incorrect_example_url', [
+    'some_string',
+    'file://localhost/home/example.html',
+    'quena.example.com'
+])
+def it_does_not_let_user_to_set_incorrect_api_base_url(fs, incorrect_example_url):
+    fs.create_file('app/config.ini', contents='[api]\nbase_url=http://localhost:8000')
+
+    runner = CliRunner()
+    result = runner.invoke(main, ['--set-url', incorrect_example_url])
+    expect(result.output).to(equal('The provided URL is incorrect.\n'))
+
+    result = runner.invoke(main, ['--url'])
+    expect(result.output).to(equal('http://localhost:8000\n'))

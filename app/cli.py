@@ -3,6 +3,7 @@ import sys
 import click
 import consolemd
 import requests
+import validators
 from configparser import ConfigParser
 from pathlib import Path
 from urllib.parse import urljoin
@@ -26,10 +27,13 @@ def set_api_url(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
 
-    config = get_config()
-    config['api']['base_url'] = value
-    with open(config_path, 'w') as configfile:
-        config.write(configfile)
+    if validators.url(value):
+        config = get_config()
+        config['api']['base_url'] = value
+        with open(config_path, 'w') as configfile:
+            config.write(configfile)
+    else:
+        print('The provided URL is incorrect.')
 
     ctx.exit()
 
