@@ -6,7 +6,7 @@ from app.cli import main
 
 
 def it_outputs_answers_based_on_user_input(when):
-    when('builtins').input('What are you looking for? ~Quena\n').thenReturn('A')
+    when('builtins').input('What are you looking for? ').thenReturn('A')
     when('app.cli.ApiClient').search_answers_for('A').thenReturn([
         {
             'id': 1,
@@ -84,3 +84,17 @@ def it_informs_the_user_if_it_cannot_retrieve_answers(when):
     result = runner.invoke(main, ['a'])
 
     expect(result.output).to(equal('Could not retrieve answers. Please make sure you use a correct API base URL.\n'))
+
+
+def it_informs_the_user_if_no_answers_were_found_for_the_phrase(when, unstub):
+    import requests
+    from mockito import mock
+
+    response = mock(spec=requests.Response)
+    when(response).json().thenReturn([])
+    when(requests).get('http://localhost:8000/api/answers.json?entry=c').thenReturn(response)
+
+    runner = CliRunner()
+    result = runner.invoke(main, ['c'])
+
+    expect(result.output).to(equal('No answers found.\n'))

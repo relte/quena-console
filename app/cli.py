@@ -64,35 +64,38 @@ def get_config():
               expose_value=False,
               is_eager=True,
               callback=show_api_url,
-              help="Show Quena API base URL and exit")
+              help="Show the API base URL and exit.")
 @click.option('--set-url',
               expose_value=False,
               is_eager=True,
               callback=set_api_url,
-              help="Set Quena API base URL and exit")
+              help="Set the API base URL and exit. Example: https://quena.yourdomain.com")
 @click.argument('phrase', required=False)
 def main(phrase):
-    if (phrase != None):
-        show_answers_for(phrase)
-    else:
-        show_answers_for(input('What are you looking for? ~Quena\n'))
+    if (phrase == None):
+        phrase = input('What are you looking for? ')
 
-
-def show_answers_for(phrase):
     config = get_config()
     client = ApiClient(config['api']['base_url'])
-    renderer = consolemd.Renderer()
 
     try:
         answers = client.search_answers_for(phrase)
-        print()
-        for answer in answers:
-            show_answer(answer, renderer)
+        if not answers:
+            print('No answers found.')
+        else:
+            print_answers(answers)
     except requests.exceptions.RequestException:
         print('Could not retrieve answers. Please make sure you use a correct API base URL.')
 
 
-def show_answer(answer, renderer):
+def print_answers(answers):
+    renderer = consolemd.Renderer()
+    print()
+    for answer in answers:
+        print_answer(answer, renderer)
+
+
+def print_answer(answer, renderer):
     print(answer['entry'])
     print('-' * len(answer['entry']))
     renderer.render(answer['content'])
