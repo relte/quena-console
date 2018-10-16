@@ -18,8 +18,8 @@ class ApiClient:
     def __init__(self, base_url):
         self.__base_url = base_url
 
-    def search_answers_for(self, phrase):
-        url = urljoin(self.__base_url, '/api/answers.json?entry=%s')
+    def search_entries_for(self, phrase):
+        url = urljoin(self.__base_url, '/api/entries.json?title=%s')
         response = requests.get(url % phrase)
         response.raise_for_status()
 
@@ -79,26 +79,26 @@ def main(phrase):
     client = ApiClient(config['api']['base_url'])
 
     try:
-        answers = client.search_answers_for(phrase)
-        if not answers:
-            print('No answers found.')
+        entries = client.search_entries_for(phrase)
+        if not entries:
+            print('No entries found.')
         else:
-            print_answers(answers)
+            print_entries(entries)
     except requests.exceptions.RequestException:
-        print('Could not retrieve answers. Please make sure you use a correct API base URL.')
+        print('Could not retrieve entries. Please make sure you use a correct API base URL.')
 
 
-def print_answers(answers):
+def print_entries(entries):
     renderer = consolemd.Renderer()
     print()
-    for answer in answers:
-        print_answer(answer, renderer)
+    for entry in entries:
+        print_entry(entry, renderer)
 
 
-def print_answer(answer, renderer):
-    print(answer['entry'])
-    print('-' * len(answer['entry']))
-    renderer.render(answer['content'])
+def print_entry(entry, renderer):
+    print(entry['title'])
+    print('-' * len(entry['title']))
+    renderer.render(entry['content'])
     print()
 
 

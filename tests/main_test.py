@@ -5,12 +5,12 @@ from expects import *
 from app.cli import main
 
 
-def it_outputs_answers_based_on_user_input(when):
+def it_outputs_entries_based_on_user_input(when):
     when('builtins').input('What are you looking for? ').thenReturn('A')
-    when('app.cli.ApiClient').search_answers_for('A').thenReturn([
+    when('app.cli.ApiClient').search_entries_for('A').thenReturn([
         {
             'id': 1,
-            'entry': 'A?',
+            'title': 'A?',
             'content': '*B*'
         }
     ])
@@ -21,11 +21,11 @@ def it_outputs_answers_based_on_user_input(when):
     expect(result.output).to(equal('\nA?\n--\n\x1b[03mB\x1b[03m\x1b[39;49;00m\n\n'))
 
 
-def it_outputs_answers_based_on_an_argument(when):
-    when('app.cli.ApiClient').search_answers_for('A').thenReturn([
+def it_outputs_entries_based_on_an_argument(when):
+    when('app.cli.ApiClient').search_entries_for('A').thenReturn([
         {
             'id': 1,
-            'entry': 'A?',
+            'title': 'A?',
             'content': 'B'
         }
     ])
@@ -74,27 +74,27 @@ def it_does_not_let_user_to_set_incorrect_api_base_url(fs, incorrect_example_url
     expect(result.output).to(equal('http://localhost:8000\n'))
 
 
-def it_informs_the_user_if_it_cannot_retrieve_answers(when):
+def it_informs_the_user_if_it_cannot_retrieve_entries(when):
     import requests
     when(requests) \
-        .get('http://localhost:8000/api/answers.json?entry=a') \
+        .get('http://localhost:8000/api/entries.json?title=a') \
         .thenRaise(requests.exceptions.RequestException)
 
     runner = CliRunner()
     result = runner.invoke(main, ['a'])
 
-    expect(result.output).to(equal('Could not retrieve answers. Please make sure you use a correct API base URL.\n'))
+    expect(result.output).to(equal('Could not retrieve entries. Please make sure you use a correct API base URL.\n'))
 
 
-def it_informs_the_user_if_no_answers_were_found_for_the_phrase(when, unstub):
+def it_informs_the_user_if_no_entries_were_found_for_the_phrase(when, unstub):
     import requests
     from mockito import mock
 
     response = mock(spec=requests.Response)
     when(response).json().thenReturn([])
-    when(requests).get('http://localhost:8000/api/answers.json?entry=c').thenReturn(response)
+    when(requests).get('http://localhost:8000/api/entries.json?title=c').thenReturn(response)
 
     runner = CliRunner()
     result = runner.invoke(main, ['c'])
 
-    expect(result.output).to(equal('No answers found.\n'))
+    expect(result.output).to(equal('No entries found.\n'))
